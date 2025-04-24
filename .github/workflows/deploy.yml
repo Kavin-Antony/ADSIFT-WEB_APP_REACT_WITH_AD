@@ -1,22 +1,25 @@
-name: Deploy React App to Build Branch
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - main
+      - main  # Adjust if using a different default branch
+  pull_request:
+    branches:
+      - main  # Optional
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          node-version: 18
+          node-version: '18'
 
       - name: Install dependencies
         run: npm install
@@ -24,9 +27,10 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Deploy to build branch
-        run: |
-          npm install -g gh-pages
-          gh-pages -d build -b build
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: build          # The branch you'll deploy to
+          folder: build          # Output folder from `npm run build`
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
