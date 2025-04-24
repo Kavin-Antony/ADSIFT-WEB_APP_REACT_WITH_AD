@@ -3,10 +3,10 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # Adjust if using a different default branch
+      - main
   pull_request:
     branches:
-      - main  # Optional
+      - main
 
 jobs:
   deploy:
@@ -27,10 +27,13 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: List dist folder contents (debug)
+        run: ls -la dist
+
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: build          # The branch you'll deploy to
-          folder: build          # Output folder from `npm run build`
+          branch: build           # Push to 'build' branch
+          folder: dist            # Vite builds to 'dist', not 'build'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
